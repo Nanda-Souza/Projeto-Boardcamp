@@ -17,8 +17,7 @@ export const createGames = (async (req, res) => {
             stockTotal,
             pricePerDay } = req.body
     
-    const game = {name, image, stockTotal, pricePerDay}
-
+   
     try {
 
         const gameExist = await db.query(`SELECT name FROM games WHERE name = $1`, [name]);
