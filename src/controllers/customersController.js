@@ -62,3 +62,30 @@ export const createCustomer = (async (req, res) => {
         
     })
       
+    export const updateCustomersById = (async (req, res) => {
+      const { id } = req.params;
+      const { name,
+        phone,
+        cpf,
+        birthday } = req.body
+
+      try {
+        const result = await db.query(`SELECT cpf FROM customers WHERE cpf = $1`, [cpf]);
+         
+        if (result.rows.length > 0) {
+            return res.status(409).send({ error: "CPF already exists" });
+          }
+        
+          await db.query(
+            `UPDATE customers SET name=$1, phone=$2, cpf=$3, birthday=$4 WHERE id=$5`, [name, phone, cpf, birthday, id]);
+
+            /*UPDATE public.customers
+	SET id=?, name=?, phone=?, cpf=?, birthday=?
+	WHERE <condition>; */
+
+        res.sendStatus(201)    
+      } catch (err) {
+        return res.status(500).send(err.message);
+      }
+
+    })
