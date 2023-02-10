@@ -70,10 +70,10 @@ export const createCustomer = (async (req, res) => {
         birthday } = req.body
 
       try {
-        const result = await db.query(`SELECT cpf FROM customers WHERE cpf = $1`, [cpf]);
+        const result = await db.query(`SELECT cpf FROM customers WHERE cpf = $1 AND id <> $2`, [cpf, id]);
          
         if (result.rows.length > 0) {
-            return res.status(409).send({ error: "CPF already exists" });
+            return res.status(409).send("CPF already exists");
           }
         
           await db.query(
