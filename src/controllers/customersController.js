@@ -79,11 +79,8 @@ export const createCustomer = (async (req, res) => {
           await db.query(
             `UPDATE customers SET name=$1, phone=$2, cpf=$3, birthday=$4 WHERE id=$5`, [name, phone, cpf, birthday, id]);
 
-            /*UPDATE public.customers
-	SET id=?, name=?, phone=?, cpf=?, birthday=?
-	WHERE <condition>; */
 
-        res.sendStatus(201)    
+        res.sendStatus(200)    
       } catch (err) {
         return res.status(500).send(err.message);
       }
