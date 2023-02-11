@@ -6,7 +6,7 @@ export const getGames = (async (req, res) => {
         const gamesList = await db.query("SELECT * FROM games");
         res.status(200).send(gamesList.rows);
       } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(err);
       }
     
 })
