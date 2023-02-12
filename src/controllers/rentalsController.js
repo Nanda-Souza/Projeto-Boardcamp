@@ -71,3 +71,46 @@ export const getRentals = (async (req, res) => {
         });
     
 
+        export const finalizeRentals = (async (req, res) => {
+            try {
+                const { id } = req.params;
+
+                const returnDate = dayjs().format("YYYY-MM-DD")
+
+                let delayFee = 0
+                
+                
+
+                const rentalExist = await db.query(`SELECT * from rentals WHERE id=$1`, [id])
+                
+                                
+                if (rentalExist.rowCount === 0){
+                    return res.status(404).send("Rental ID invalid!");                 
+        
+                }
+
+                if (rentalExist.rows[0].returnDate || rentalExist.rows[0].delayFee){
+                    return res.status(400).send("Rental already finalized!"); 
+                }
+                
+                if (dayjs().isAfter(rentalExist.rows[0].rentDate)){
+                    const rentDate = rentalExist.rows[0].rentDate
+                    
+                    const fee = dayjs(returnDate).diff(rentDate, "day");
+                    
+                    const gamePrice = (rentalExist.rows[0].originalPrice/rentalExist.rows[0].daysRented)
+                    
+                    delayFee = gamePrice * fee
+                } 
+
+                await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"=$2 WHERE id=$3`,[returnDate, delayFee, id]);                
+
+                res.sendStatus(200)            
+              } catch (err) {
+                res.status(500).send(err);
+        
+              }
+            });
+        
+    
+    
