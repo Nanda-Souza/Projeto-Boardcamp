@@ -116,5 +116,29 @@ export const getRentals = (async (req, res) => {
               }
             });
         
+        export const deleteRentals = (async (req, res) => {
+            try {
+                const { id } = req.params;
+
+                                
+                const rentalExist = await db.query(`SELECT * from rentals WHERE id=$1`, [id])                
+                                
+                if (rentalExist.rowCount === 0){
+                    return res.status(404).send("Rental ID invalid!");                 
+        
+                }                
+
+                if (!rentalExist.rows[0].returnDate){
+                    return res.status(400).send("Rental is still in progress!"); 
+                }
+                
+                await db.query(`DELETE FROM rentals WHERE id=$1`,[id]);
+                
+                res.sendStatus(200)                
+                } catch (err) {
+                res.status(500).send(err);
+        
+                }
+            });
     
     
