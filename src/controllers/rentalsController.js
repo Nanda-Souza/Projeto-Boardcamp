@@ -80,18 +80,18 @@ export const getRentals = (async (req, res) => {
 
                 let delayFee = 0
                 
-                const rentalExist = await db.query(`SELECT * from rentals WHERE id=$1`, [id])
+                const rentalExist = await db.query(`SELECT * from rentals WHERE id=$1`, [id])                
+                                
+                if (rentalExist.rowCount === 0){
+                    return res.status(404).send("Rental ID invalid!");                 
+        
+                }
 
                 const rentDate = rentalExist.rows[0].rentDate
 
                 const daysRented = rentalExist.rows[0].daysRented
                 
                 const returnRentDate = dayjs(rentDate).add(daysRented, 'day')
-                                
-                if (rentalExist.rowCount === 0){
-                    return res.status(404).send("Rental ID invalid!");                 
-        
-                }
 
                 if (rentalExist.rows[0].returnDate || rentalExist.rows[0].delayFee){
                     return res.status(400).send("Rental already finalized!"); 
